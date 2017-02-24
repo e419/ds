@@ -1,0 +1,59 @@
+---
+
+#
+# Docker-compose file to bring up couple DS notebooks!
+#
+
+version: '2'
+
+services:
+
+  jupyter:
+    image: jupyter/datascience-notebook
+    environment:
+      - GRANT_SUDO=yes
+      - PASSWORD=password
+    user: root
+    ports:
+      - 8888:8888
+    volumes:
+      - .:/home/jovyan/work
+
+  pyspark:
+    image: jupyter/pyspark-notebook
+    user: root
+    environment:
+      - GRANT_SUDO=yes
+      - PASSWORD=password
+    ports:
+      - 8888:8888
+    volumes:
+      - .:/home/jovyan/work
+
+  conda:
+    image: continuumio/anaconda
+    user: root
+    environment:
+      - PASSWORD=password
+    ports:
+      - 8888:8888
+    volumes:
+      - .:/notebooks/
+    command: /bin/bash -c "/opt/conda/bin/conda install jupyter -y --quiet && mkdir /opt/notebooks && /opt/conda/bin/jupyter notebook --notebook-dir=/notebooks --ip='*' --port=8888 --no-browser"
+
+  tensorflow:
+    image: gcr.io/tensorflow/tensorflow
+    environment:
+      - PASSWORD=password
+    ports:
+      - 9999:8888
+    volumes:
+      - .:/notebooks
+
+  rstudio:
+    image: rocker/rstudio
+    user: root
+    ports:
+      - 8787:8787
+
+...      
