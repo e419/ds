@@ -39,7 +39,7 @@ services:
       - 8888:8888
     volumes:
       - .:/notebooks/
-    command: /bin/bash -c "/opt/conda/bin/conda install jupyter -y --quiet && mkdir /opt/notebooks && /opt/conda/bin/jupyter notebook --notebook-dir=/notebooks --ip='*' --port=8888 --no-browser"
+    command: /bin/bash -c "/opt/conda/bin/conda install jupyter -y --quiet && if [ ! -d /opt/notebooks ]; then mkdir /opt/notebooks; fi && /opt/conda/bin/jupyter notebook --notebook-dir=/notebooks --ip='*' --port=8888 --no-browser"
 
   tensorflow:
     image: gcr.io/tensorflow/tensorflow
@@ -55,5 +55,11 @@ services:
     user: root
     ports:
       - 8787:8787
+
+  dss:
+    image: dataiku/dss
+    restart: always
+    ports:
+      - "10000:10000"
 
 ...      
